@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: groundstation-api
+  namespace: groundstation
+spec:
+  type: ClusterIP
+  selector:
+    app: groundstation-api
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP

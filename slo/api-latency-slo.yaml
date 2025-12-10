@@ -1,0 +1,16 @@
+service: groundstation-api
+slo:
+  objective: 0.99
+  window: 30d
+  indicator:
+    type: latency
+    success_metric: http_requests_total{status=~"2.."}
+    latency_metric: http_request_duration_seconds_bucket
+    threshold_seconds: 0.5
+alerting:
+  fast_burn:
+    window: 5m
+    burn_rate: 10
+  slow_burn:
+    window: 1h
+    burn_rate: 2

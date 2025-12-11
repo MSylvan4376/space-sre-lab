@@ -2,6 +2,73 @@
 
 This repository is a hands-on Site Reliability Engineering lab that showcases how I design and operate
 reliable cloud infrastructure and applications.
+## 🚀 Space SRE Platform Architecture
+
+```mermaid
+flowchart LR
+
+    subgraph Dev["Developer Workflow"]
+        A[Code Change]
+        B[Git Push - main]
+        A --> B
+    end
+
+    subgraph CI["GitHub Actions - CI Pipeline"]
+        C[Build Docker Image]
+        D[Tag Latest + SHA]
+        E[Push to GHCR]
+        C --> D --> E
+    end
+
+    subgraph Registry["GitHub Container Registry (GHCR)"]
+        F[(groundstation-api:latest)]
+        E --> F
+    end
+
+    subgraph AWS["AWS Infrastructure (Provisioned via Terraform)"]
+        
+        subgraph VPC["VPC (Private Subnets)"]
+            G1[Private Subnet (AZ A)]
+            G2[Private Subnet (AZ B)]
+        end
+
+        subgraph EKS["EKS Cluster"]
+            H1[EKS Control Plane]
+            H2[Managed Node Group<br/>t3.medium (2–4 nodes)]
+            H1 --> H2
+        end
+        
+        VPC --> EKS
+    end
+
+    subgraph K8s["Kubernetes Layer"]
+        I[Deployment: groundstation-api]
+        J[Service (ClusterIP)]
+        K[HPA: CPU-based auto-scaling 3–8 pods]
+        I --> J
+        I --> K
+    end
+
+    F --> I
+    H2 --> I
+
+    subgraph OBS["Observability Stack"]
+        L[Prometheus<br/>Scrape /metrics]
+        M[Grafana Dashboards<br/>SLO Visualization]
+        N[Loki / Vector for Logging]
+        I --> L
+        L --> M
+        I --> N
+    end
+
+    subgraph SRE["SRE Layer"]
+        O[SLOs & Error Budget Policies]
+        P[Alerting Rules<br/>Fast & Slow Burn Alerts]
+        Q[Runbooks<br/>Incident Response]
+        L --> O
+        O --> P
+        P --> Q
+    end
 
 It includes:
 

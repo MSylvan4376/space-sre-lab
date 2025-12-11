@@ -1,0 +1,4 @@
+# Example variables for the Space SRE EKS lab
+
+region       = "us-east-1"
+cluster_name = "space-sre-eks"

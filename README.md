@@ -105,6 +105,75 @@ The goal of this repo is to demonstrate how I approach SRE work end-to-end:
 from application instrumentation and Kubernetes deployment to observability, SLOs, and operational runbooks
 for mission-critical systems such as groundstation or satellite communication services.
 
+---
+
+## 📡 Observability Layer (Metrics, Logs, Dashboards, SLOs)
+
+A mission-critical system—especially one modeled after satellite or groundstation communications—must be observable.  
+This lab includes a structured observability layer built around **Prometheus**, **Grafana**, **Loki**, and **Vector**, with SLO-driven alerting to reflect real SRE practices.
+
+### 🔎 Metrics (Prometheus)
+Prometheus scrapes the `groundstation-api` at `/metrics`, collecting:
+- Request rate (RPS)
+- Error rate by status class
+- Latency histograms (p50 / p90 / p95 / p99)
+- Saturation indicators such as CPU & memory (if running on Kubernetes)
+
+Configuration:  
+`observability/prometheus/prometheus.yml`
+
+Prometheus rules include:
+- SLI calculations (success rate, latency objectives)
+- Burn-rate alert examples for error budgets
+
+Rules:  
+`observability/prometheus/rules/groundstation-slo-rules.yml`
+
+### 📊 Dashboards (Grafana)
+Grafana dashboards visualize the core **Golden Signals**:
+- Latency
+- Traffic
+- Errors
+- Saturation
+
+Dashboard JSON:  
+`observability/grafana/dashboards/groundstation-api.json`
+
+This shows how I would define dashboards as code (DaC) in a real team environment.
+
+### 📜 Logs (Loki + Vector)
+Vector acts as the log collector/forwarder and ships structured logs to Loki.  
+Logs are enriched with service metadata for easier correlation during incidents.
+
+- Vector config: `observability/vector/vector-config.yaml`  
+- Loki storage/index config: `observability/loki/loki-config.yaml`
+
+This mirrors modern logging architectures used in Kubernetes clusters.
+
+### 🎯 SLOs, SLIs, Error Budgets
+To model real SRE operational practices, this lab includes:
+- **SLIs**: request success ratio, latency under threshold
+- **SLOs**: e.g., 99% success rate, p95 latency < 500ms
+- **Burn-rate alerts**: short-window & long-window detection
+- **Annotations** describing debugging guidance
+
+This demonstrates not just how to collect metrics, but how to **convert them into business-relevant reliability targets**.
+
+### 🛠 Incident Readiness
+SLO alerting ties into runbook-style operator guidance:
+- What to check first
+- How to verify API health
+- How to interpret dashboards
+- How to correlate logs + metrics
+
+This shows an understanding of **operational readiness**, not just tooling.
+
+---
+
+This observability layer is intentionally designed to be deployable in stages—first locally, then onto Kubernetes—mirroring real SRE workflows for gradual, low-risk adoption.
+
+
+
 ## Repo Structure
 
 - `groundstation-api/` – application code + Dockerfile

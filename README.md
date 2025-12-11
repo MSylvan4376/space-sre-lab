@@ -4,71 +4,78 @@ This repository is a hands-on Site Reliability Engineering lab that showcases ho
 reliable cloud infrastructure and applications.
 ## 🚀 Space SRE Platform Architecture
 
+```markdown
 ```mermaid
 flowchart LR
 
-    subgraph Dev["Developer Workflow"]
-        A[Code Change]
-        B[Git Push - main]
-        A --> B
+  %% Developer
+  subgraph Dev["Developer Workflow"]
+    A[Code change]
+    B[Git push (main)]
+    A --> B
+  end
+
+  %% CI
+  subgraph CI["GitHub Actions - CI pipeline"]
+    C[Build Docker image]
+    D[Tag latest and SHA]
+    E[Push image]
+    C --> D --> E
+  end
+
+  %% Registry
+  subgraph REG["GitHub Container Registry (GHCR)"]
+    F[(groundstation-api:latest)]
+  end
+
+  %% AWS + EKS
+  subgraph AWS["AWS (Terraform)"]
+    subgraph VPC["VPC (private subnets)"]
+      G1["Private subnet AZ-a"]
+      G2["Private subnet AZ-b"]
     end
 
-    subgraph CI["GitHub Actions - CI Pipeline"]
-        C[Build Docker Image]
-        D[Tag Latest + SHA]
-        E[Push to GHCR]
-        C --> D --> E
+    subgraph EKS["EKS cluster"]
+      H1[EKS control plane]
+      H2["Managed node group\n2-4 nodes"]
+      H1 --> H2
     end
+  end
 
-    subgraph Registry["GitHub Container Registry (GHCR)"]
-        F[(groundstation-api:latest)]
-        E --> F
-    end
+  %% Kubernetes
+  subgraph K8S["Kubernetes layer"]
+    I["Deployment: groundstation-api"]
+    J["Service: ClusterIP"]
+    K["HPA: 3-8 pods (CPU)"]
+    I --> J
+    I --> K
+  end
 
-    subgraph AWS["AWS Infrastructure (Provisioned via Terraform)"]
-        
-        subgraph VPC["VPC (Private Subnets)"]
-            G1[Private Subnet (AZ A)]
-            G2[Private Subnet (AZ B)]
-        end
+  %% Observability
+  subgraph OBS["Observability"]
+    L["Prometheus (scrape /metrics)"]
+    M["Grafana dashboards"]
+    N["Logging (Loki / Vector)"]
+  end
 
-        subgraph EKS["EKS Cluster"]
-            H1[EKS Control Plane]
-            H2[Managed Node Group<br/>t3.medium (2–4 nodes)]
-            H1 --> H2
-        end
-        
-        VPC --> EKS
-    end
+  %% SRE
+  subgraph SRE["SRE layer"]
+    O["SLOs and error budgets"]
+    P["Alert rules"]
+    Q["Runbooks and incident response"]
+  end
 
-    subgraph K8s["Kubernetes Layer"]
-        I[Deployment: groundstation-api]
-        J[Service (ClusterIP)]
-        K[HPA: CPU-based auto-scaling 3–8 pods]
-        I --> J
-        I --> K
-    end
-
-    F --> I
-    H2 --> I
-
-    subgraph OBS["Observability Stack"]
-        L[Prometheus<br/>Scrape /metrics]
-        M[Grafana Dashboards<br/>SLO Visualization]
-        N[Loki / Vector for Logging]
-        I --> L
-        L --> M
-        I --> N
-    end
-
-    subgraph SRE["SRE Layer"]
-        O[SLOs & Error Budget Policies]
-        P[Alerting Rules<br/>Fast & Slow Burn Alerts]
-        Q[Runbooks<br/>Incident Response]
-        L --> O
-        O --> P
-        P --> Q
-    end
+  %% Wiring
+  B --> C
+  E --> F
+  F --> I
+  H2 --> I
+  I --> L
+  L --> M
+  I --> N
+  L --> O
+  O --> P
+  P --> Q
 
 It includes:
 

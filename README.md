@@ -61,68 +61,23 @@ It represents real-world abilities, not toy examples.
 
 ## 🚀 Space SRE Platform Architecture
 
+
 ```mermaid
 flowchart LR
+  A[Code pushed to GitHub]
+  B[GitHub Actions builds Docker image]
+  C[Image stored in GitHub Container Registry]
+  D[EKS cluster on AWS]
+  E[groundstation-api deployed on Kubernetes]
+  F[Prometheus / Grafana / Loki observability]
+  G[SLOs, alerts, and runbooks]
 
-  subgraph Dev["Developer Workflow"]
-    A[Code change]
-    B[Git push (main)]
-    A --> B
-  end
-
-  subgraph CI["GitHub Actions - CI pipeline"]
-    C[Build Docker image]
-    D[Tag latest and SHA]
-    E[Push image]
-    C --> D --> E
-  end
-
-  subgraph REG["GitHub Container Registry (GHCR)"]
-    F[(groundstation-api:latest)]
-  end
-
-  subgraph AWS["AWS (Terraform)"]
-    subgraph VPC["VPC private subnets"]
-      G1["Private subnet AZ-a"]
-      G2["Private subnet AZ-b"]
-    end
-    subgraph EKS["EKS cluster"]
-      H1[EKS control plane]
-      H2["Managed node group\n2-4 nodes"]
-      H1 --> H2
-    end
-  end
-
-  subgraph K8S["Kubernetes layer"]
-    I["Deployment: groundstation-api"]
-    J["Service: ClusterIP"]
-    K["HPA: 3-8 pods (CPU)"]
-    I --> J
-    I --> K
-  end
-
-  subgraph OBS["Observability"]
-    L["Prometheus scrape /metrics"]
-    M["Grafana dashboards"]
-    N["Logging (Loki/Vector)"]
-  end
-
-  subgraph SRE["SRE layer"]
-    O["SLOs & error budgets"]
-    P["Alert rules"]
-    Q["Runbooks & incident response"]
-  end
-
+  A --> B
   B --> C
+  C --> E
+  D --> E
   E --> F
-  F --> I
-  H2 --> I
-  I --> L
-  L --> M
-  I --> N
-  L --> O
-  O --> P
-  P --> Q
+  F --> G
 ```
 
 It includes:

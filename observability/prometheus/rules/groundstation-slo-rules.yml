@@ -1,0 +1,38 @@
+groups:
+  - name: groundstation-api-slo
+    rules:
+      # Example SLI: request success ratio over 5 minutes
+      - record: job:groundstation_api_success_ratio_5m
+        expr: >
+          sum(rate(http_requests_total{service="groundstation-api",status!~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{service="groundstation-api"}[5m]))
+
+      # Example SLO alert: success ratio below 99% over 5 minutes
+      - alert: GroundstationApiLowSuccessRateShort
+        expr: job:groundstation_api_success_ratio_5m < 0.99
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "groundstation-api success rate below 99% (5m window)"
+          description: >
+            Success ratio for groundstation-api has dropped below 99% over the past 5 minutes.
+            This may indicate a partial outage or increased error rate. Check logs and dashboards.
+
+      # Example SLO alert: high latency (p95 > 500ms)
+      - alert: GroundstationApiHighLatencyP95
+        expr: >
+          histogram_quantile(
+            0.95,
+            sum(rate(http_request_duration_seconds_bucket{service="groundstation-api"}[5m]))
+            by (le)
+          ) > 0.5
+        for: 10m
+        labels:
+          severity: warn
+        annotations:
+          summary: "groundstation-api p95 latency above 500ms"
+          description: >
+            95th percentile latency for groundstation-api is above 500ms. Investigate upstream
+            dependencies, saturation, and recent deployments.

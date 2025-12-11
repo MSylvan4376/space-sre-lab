@@ -1,0 +1,22 @@
+sources:
+  app_logs:
+    type: file
+    include:
+      - /var/log/groundstation-api/*.log
+
+transforms:
+  add_fields:
+    type: remap
+    inputs: [app_logs]
+    source: |
+      .service = "groundstation-api"
+      .environment = "local"
+
+sinks:
+  loki:
+    type: loki
+    inputs: [add_fields]
+    endpoint: "http://localhost:3100"
+    labels:
+      service: "{{ service }}"
+      environment: "{{ environment }}"

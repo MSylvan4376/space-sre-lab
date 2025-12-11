@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 30s
+
+scrape_configs:
+  # Scrape the groundstation-api running locally on Docker
+  - job_name: "groundstation-api-local"
+    static_configs:
+      - targets: ["host.docker.internal:8080"]
+        labels:
+          service: "groundstation-api"
+          environment: "local"
+
+  # Example: Scrape groundstation-api running in Kubernetes (EKS)
+  # This is illustrative and can be used if deploying Prometheus in-cluster.
+  # - job_name: "groundstation-api-eks"
+  #   kubernetes_sd_configs:
+  #     - role: pod
+  #   relabel_configs:
+  #     - source_labels: [__meta_kubernetes_pod_label_app]
+  #       action: keep
+  #       regex: groundstation-api

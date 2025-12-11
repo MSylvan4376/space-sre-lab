@@ -1,0 +1,22 @@
+{
+    "title": "Groundstation API – SRE Overview",
+    "uid": "groundstation-api-sre",
+    "schemaVersion": 39,
+    "version": 1,
+    "panels": [
+      {
+        "id": 1,
+        "type": "graph",
+        "title": "Request Rate (req/s)",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{service=\"groundstation-api\"}[5m]))",
+            "legendFormat": "requests"
+          }
+        ],
+        "lines": true
+      }
+    ]
+  }
+  

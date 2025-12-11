@@ -173,6 +173,25 @@ This shows an understanding of **operational readiness**, not just tooling.
 This observability layer is intentionally designed to be deployable in stages—first locally, then onto Kubernetes—mirroring real SRE workflows for gradual, low-risk adoption.
 
 
+---
+
+## 🧰 Operations (Runbooks & Postmortems)
+
+This repo includes lightweight operational docs written in the style used by SRE/on-call teams.
+
+### Runbooks
+- Incident Response: `runbooks/incident-response.md`
+- High Latency: `runbooks/high-latency-groundstation.md`
+- Pod CrashLoop: `runbooks/pod-crashloop.md`
+- Deployment Rollback: `runbooks/deployment-rollback.md`
+- Service Outage: `runbooks/groundstation-outage.md`
+
+### Postmortems
+- PIR Template: `postmortems/PIR-template.md`
+
+> Note: Runbook commands assume access to a Kubernetes cluster with kubeconfig configured.
+> In this lab, they are provided for interview discussion and operational design review.
+
 
 ## Repo Structure
 

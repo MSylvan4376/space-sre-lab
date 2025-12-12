@@ -21,6 +21,63 @@ A hands-on Site Reliability Engineering platform demonstrating how to design, de
 This repo mirrors what real SREs do every day: build reliable systems, automate everything, measure service health using SLOs, and create operational tooling that supports fast, safe deployments.
 
 ---
+## 🎙️ Project Walkthrough & Discussion Guide
+
+Below are structured talking points I use to explain this project at different depths,
+depending on the interview format and time available.
+
+---
+
+### ⏱️ 30-Second Overview (Recruiter / Intro Screen)
+
+“This is a learning-focused SRE lab where I model how I’d design and operate a
+mission-critical cloud-native service. It includes a FastAPI workload on Kubernetes,
+CI/CD with GitHub Actions, Terraform-modeled AWS infrastructure, and a full observability
+and incident response layer with SLIs, SLOs, and runbooks.”
+
+---
+
+### ⏱️ 90-Second Technical Summary (Hiring Manager)
+
+“At the center is a containerized FastAPI service that simulates telemetry traffic.
+It’s deployed to Kubernetes with health probes, autoscaling, and resource limits.
+
+Infrastructure is modeled using Terraform with clean module boundaries for VPC and EKS.
+The environment is intentionally plan-only so reviewers can inspect design without
+provisioning resources.
+
+The service is instrumented around the Golden Signals using Prometheus metrics,
+Grafana dashboards, and Loki logs. I define SLIs and SLOs and include burn-rate alert
+examples, along with realistic runbooks for incidents, rollbacks, and traffic spikes.”
+
+---
+
+### 🔍 Deep Dive (Senior / Onsite / System Design)
+
+“This project is less about the tools and more about how I think about reliability.
+
+I start with clear service boundaries and instrumentation before deployment.
+I design CI/CD for safe, repeatable delivery.
+I model infrastructure as code so changes are reviewable and auditable.
+I define SLOs first and let them drive alerting decisions.
+And I document failure modes with runbooks and post-incident review templates.
+
+In interviews, I like to discuss tradeoffs — for example, what I’d harden for production,
+how I’d scale observability, or how I’d evolve this into a multi-region system.”
+
+---
+
+### 💡 Common Follow-Ups I’m Ready to Answer
+
+- How would you make this production-ready?
+- How would you scale this to multiple regions?
+- What SLOs would you choose and why?
+- How do you prevent alert fatigue?
+- How would you handle a cascading failure?
+- What would you automate next?
+
+This project is intentionally designed to support those conversations.
+
 
 ## ✨ What This Project Demonstrates  
 **This lab is structured as an end-to-end, production-style SRE environment. It shows I can:**

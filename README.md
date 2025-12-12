@@ -1,4 +1,21 @@
-## 🛰️ Space SRE Lab  
+## 🛰️ Space SRE Lab 
+## 🎤 TL;DR for Hiring Managers (60 seconds)
+
+This repository is a **learning-focused SRE lab** that demonstrates how I design, deploy, observe, and operate reliable cloud-native systems.
+
+If you only have a minute:
+- **Application**: FastAPI “groundstation-api” simulating telemetry traffic with health checks and Prometheus metrics
+- **CI/CD**: GitHub Actions builds and publishes container images to GHCR
+- **Infrastructure**: Terraform-modeled AWS VPC + EKS (plan-only, interview-safe)
+- **Platform**: Kubernetes deployments, probes, autoscaling (HPA)
+- **Observability**: Prometheus, Grafana dashboards, Loki logs, SLIs/SLOs
+- **Operations**: Realistic runbooks, rollback procedures, and post-incident review template
+
+🎯 **Purpose**: Showcase SRE thinking — not just tools, but reliability tradeoffs, failure handling, and operational readiness.
+
+📄 **3-Minute Guided Walkthrough (PDF)**  
+👉 [Space SRE Lab — Interview Walkthrough](./Space_SRE_Lab_3_Minute_Interview_Walkthrough.pdf)
+
 A hands-on Site Reliability Engineering platform demonstrating how to design, deploy, and operate mission-critical cloud infrastructure using **Terraform**, **EKS**, **Kubernetes**, **CI/CD**, and **modern observability practices**.  
 
 This repo mirrors what real SREs do every day: build reliable systems, automate everything, measure service health using SLOs, and create operational tooling that supports fast, safe deployments.

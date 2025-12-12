@@ -1,0 +1,22 @@
+sources:
+  kubernetes_logs:
+    type: kubernetes_logs
+
+transforms:
+  add_service_label:
+    type: remap
+    inputs: ["kubernetes_logs"]
+    source: |
+      .service = "groundstation-api"
+
+sinks:
+  loki:
+    type: loki
+    inputs: ["add_service_label"]
+    endpoint: http://loki:3100
+    encoding:
+      codec: json
+    labels:
+      service: "{{ service }}"
+      namespace: "{{ kubernetes.namespace_name }}"
+      pod: "{{ kubernetes.pod_name }}"

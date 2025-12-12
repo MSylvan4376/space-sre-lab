@@ -1,0 +1,51 @@
+groups:
+  - name: groundstation-api-slo
+    rules:
+      # Example: error rate SLI (5xx / all requests)
+      - record: job:groundstation:error_ratio5m
+        expr: |
+          sum(rate(http_requests_total{service="groundstation-api",status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{service="groundstation-api"}[5m]))
+
+      # Fast burn: high error ratio for short window (page)
+      - alert: GroundstationHighErrorRateFastBurn
+        expr: job:groundstation:error_ratio5m > 0.02
+        for: 5m
+        labels:
+          severity: page
+          service: groundstation-api
+        annotations:
+          summary: "Fast burn: elevated 5xx error ratio"
+          description: "Error ratio > 2% for 5m. Investigate deployment, upstream deps, or resource pressure."
+
+      # Slow burn: sustained but lower-level errors (ticket)
+      - alert: GroundstationHighErrorRateSlowBurn
+        expr: job:groundstation:error_ratio5m > 0.005
+        for: 30m
+        labels:
+          severity: ticket
+          service: groundstation-api
+        annotations:
+          summary: "Slow burn: sustained elevated 5xx error ratio"
+          description: "Error ratio > 0.5% for 30m. Investigate trends, capacity, and recent changes."
+
+  - name: groundstation-api-performance
+    rules:
+      # Latency p95 (example) — depends on histogram bucket naming in your app
+      - record: job:groundstation:latency_p95_5m
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(http_request_duration_seconds_bucket{service="groundstation-api"}[5m])) by (le)
+          )
+
+      - alert: GroundstationLatencyP95High
+        expr: job:groundstation:latency_p95_5m > 0.75
+        for: 10m
+        labels:
+          severity: ticket
+          service: groundstation-api
+        annotations:
+          summary: "High latency p95"
+          description: "p95 latency > 750ms for 10m. Check saturation, CPU throttling, or downstream timeouts."

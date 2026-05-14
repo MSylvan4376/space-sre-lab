@@ -24,7 +24,6 @@ It is optimized for:
 - **SEV3 – Minor**
   - Degraded performance, non-critical feature impact, or noisy alerts
 
-For this lab, SEV is mainly for *structure* and interview discussion.
 
 ---
 

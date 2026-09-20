@@ -41,3 +41,30 @@ def telemetry():
     REQUEST_COUNT.labels(method="GET", endpoint="/telemetry", status="200").inc()
 
     return {"latency": latency, "message": "Telemetry packet received"}
+
+
+@app.get("/load/cpu")
+def cpu_load(seconds: float = 1.0):
+    """Generate bounded CPU pressure for local reliability testing."""
+    seconds = max(0.1, min(seconds, 10.0))
+    start = time.perf_counter()
+    iterations = 0
+
+    while time.perf_counter() - start < seconds:
+        # Intentional CPU work for HPA/failure-injection testing.
+        _ = sum(i * i for i in range(10_000))
+        iterations += 1
+
+    duration = time.perf_counter() - start
+    REQUEST_LATENCY.labels(endpoint="/load/cpu").observe(duration)
+    REQUEST_COUNT.labels(
+        method="GET",
+        endpoint="/load/cpu",
+        status="200",
+    ).inc()
+
+    return {
+        "status": "completed",
+        "duration_seconds": duration,
+        "iterations": iterations,
+    }

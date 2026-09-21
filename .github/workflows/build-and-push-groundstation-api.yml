@@ -37,5 +37,5 @@ jobs:
           file: ./groundstation-api/Dockerfile
           push: true
           tags: |
-            ghcr.io/msylvan4376/${{ env.IMAGE_NAME }}:latest
             ghcr.io/msylvan4376/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/msylvan4376/{0}:latest', env.IMAGE_NAME) || '' }}

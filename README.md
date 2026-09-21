@@ -249,6 +249,28 @@ This observability layer is intentionally designed to be deployable in stages—
 
 ---
 
+## 🧪 Validated Reliability Exercise
+
+A controlled CPU saturation exercise was executed against the Groundstation API on a local Docker Desktop Kubernetes cluster to validate real HPA behavior.
+
+Observed behavior:
+
+- Healthy baseline: **3 replicas**
+- HPA CPU target: **60%**
+- Sustained CPU pressure triggered automatic scale-out: **3 → 5 → 8 replicas**
+- **8 replicas** was the configured maximum
+- After load removal, the HPA automatically recovered: **8 → 3 replicas**
+- Final application state: **3/3 Ready**, **0 restarts**
+- Kubernetes Metrics Server supplied the resource metrics used by the HPA
+
+The exercise also included troubleshooting a missing Resource Metrics API before validation. The diagnosis, local Metrics Server remediation, HPA events, recovery evidence, and operational findings are documented in:
+
+`runbooks/incidents/incident-001-cpu-saturation.md`
+
+> The validated exercise ran locally on Docker Desktop Kubernetes. The AWS VPC/EKS infrastructure in `infra/terraform/` is Terraform-modeled infrastructure and is not presented as the runtime environment for this test.
+
+---
+
 ## 🧰 Operations (Runbooks & Postmortems)
 
 This repo includes lightweight operational docs written in the style used by SRE/on-call teams.

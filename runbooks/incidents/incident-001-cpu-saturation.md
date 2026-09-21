@@ -68,7 +68,7 @@ Kubernetes HPA events recorded the following scale-out sequence:
     |
     | CPU utilization above target
     v
-6 replicas
+5 replicas
     |
     | CPU utilization remained above target
     v
@@ -87,10 +87,6 @@ The HPA automatically reduced the workload:
 
 ```text
 8 replicas
-    |
-    | metrics below target
-    v
-5 replicas
     |
     | metrics below target
     v
@@ -119,13 +115,29 @@ The HPA condition returned to `ScalingLimited=True` with `TooFewReplicas`, indic
 2. Verified the SHA-tagged application image in Kubernetes.
 3. Started sustained concurrent requests against `/load/cpu`.
 4. HPA detected CPU utilization above the 60% target.
-5. HPA scaled the deployment from 3 to 6 replicas.
-6. Continued CPU pressure caused the HPA to scale from 6 to the maximum of 8 replicas.
+5. HPA scaled the deployment from 3 to 5 replicas.
+6. Continued CPU pressure caused the HPA to scale from 5 to the maximum of 8 replicas.
 7. CPU load ended.
 8. Metrics fell below the HPA target.
-9. HPA automatically scaled from 8 to 5 replicas.
-10. HPA automatically returned the deployment from 5 to the minimum of 3 replicas.
-11. All remaining pods were healthy with zero restarts.
+9. HPA automatically returned the deployment from 8 to the minimum of 3 replicas.
+10. All remaining pods were healthy with zero restarts.
+
+## Troubleshooting During Validation
+
+During initial validation, the HPA reported CPU utilization as `<unknown>` because the local Kubernetes cluster did not have a functioning Resource Metrics API.
+
+The issue was isolated by checking the Metrics API and HPA events. Metrics Server was installed, but its initial pod could not scrape the Docker Desktop Kubernetes node because kubelet certificate verification failed for the node IP.
+
+For this local lab environment, Metrics Server was configured with `--kubelet-insecure-tls`. After the deployment rolled out successfully:
+
+- `v1beta1.metrics.k8s.io` reported `Available=True`
+- `kubectl top pods -n groundstation` returned CPU and memory metrics
+- The HPA reported valid CPU utilization
+- `ScalingActive=True` with reason `ValidMetricFound`
+
+This restored the telemetry path required by the HPA before the CPU saturation exercise continued.
+
+> The `--kubelet-insecure-tls` setting was used only to accommodate the certificate behavior of this local Docker Desktop lab. It is not presented here as a production Kubernetes configuration.
 
 ## Findings
 
@@ -159,9 +171,8 @@ kubectl describe hpa groundstation-api-hpa -n groundstation
 The HPA event history recorded:
 
 ```text
-SuccessfulRescale  New size: 6; reason: cpu resource utilization (percentage of request) above target
+SuccessfulRescale  New size: 5; reason: cpu resource utilization (percentage of request) above target
 SuccessfulRescale  New size: 8; reason: cpu resource utilization (percentage of request) above target
-SuccessfulRescale  New size: 5; reason: All metrics below target
 SuccessfulRescale  New size: 3; reason: All metrics below target
 ```
 

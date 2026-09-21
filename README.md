@@ -80,7 +80,7 @@ This project is intentionally designed to support those conversations.
 
 
 ## ✨ What This Project Demonstrates  
-**This lab is structured as an end-to-end, production-style SRE environment. It shows I can:**
+**This lab models an end-to-end SRE environment and the engineering practices used to operate one. It shows I can:**
 
 ### 🚀 Cloud & Infrastructure Engineering  
 - Provision AWS infrastructure (VPC, private subnets, IAM roles, EKS cluster, node groups) using **Terraform**  

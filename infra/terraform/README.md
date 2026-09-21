@@ -19,7 +19,7 @@ The goal is to demonstrate how I would model:
 - Two private subnets (AZ-a and AZ-b)
 
 ### **EKS Cluster**
-- Kubernetes version: configurable (default `1.29`)
+- Kubernetes version: configurable (default `1.35`)
 - Managed node group (t3.medium, 2–4 nodes)
 - IAM roles for:
   - `eks_cluster_role`
@@ -49,6 +49,16 @@ infra/terraform/
 └── eks/
 └── main.tf
 
+
+---
+
+## ⚠️ Network Model Scope
+
+The Terraform network module intentionally focuses on the VPC, private subnets, and EKS module boundaries used for architecture discussion.
+
+It does not currently provision production egress components such as NAT gateways, Internet gateways, route tables, or VPC endpoints. A deployable private EKS environment would require the appropriate connectivity design for node bootstrap, image retrieval, AWS API access, and other outbound dependencies.
+
+This keeps the repository non-destructive and focused on infrastructure modeling rather than representing the Terraform configuration as a production-ready AWS environment.
 
 ---
 

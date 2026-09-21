@@ -19,7 +19,7 @@ variable "private_subnet_ids" {
 
 variable "eks_version" {
   type        = string
-  default     = "1.29"
+  default     = "1.35"
   description = "Kubernetes / EKS version"
 }
 
